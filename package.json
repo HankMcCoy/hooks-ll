@@ -1,11 +1,26 @@
 {
-  "name": "hooks-ll",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+	"name": "hooks-ll",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@emotion/core": "^10.0.7",
+		"@emotion/styled": "^10.0.7",
+		"react": "^16.8.3",
+		"react-dom": "^16.8.3"
+	},
+	"babel": {
+		"plugins": [
+			"@babel/plugin-proposal-class-properties"
+		]
+	},
+	"devDependencies": {
+		"@babel/core": "^7.3.4",
+		"@babel/plugin-proposal-class-properties": "^7.3.4"
+	}
 }
