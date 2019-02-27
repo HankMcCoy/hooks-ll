@@ -1,9 +1,19 @@
-import React, { useState, useContext } from 'react'
+import React, { useReducer, useContext } from 'react'
 import ReactDOM from 'react-dom'
 
 const localeCtx = React.createContext()
+function localeReducer(state, action) {
+	switch (action.type) {
+		case 'set-locale':
+			return action.payload
+		default:
+			throw new Error('Invalid action')
+	}
+}
+
 function LocaleProvider({ children }) {
-	const [locale, setLocale] = useState('english')
+	const [locale, dispatch] = useReducer(localeReducer, 'english')
+	const setLocale = l => dispatch({ type: 'set-locale', payload: l })
 	return (
 		<localeCtx.Provider value={{ locale, setLocale }}>
 			{children}
