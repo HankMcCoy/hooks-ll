@@ -9,7 +9,7 @@ function OnlineUsers() {
 
 	useEffect(() => {
 		const inFlightPromise = getOnlineUsers().then(u => setUsers(u))
-		return () => {
+		return function cleanup() {
 			if (inFlightPromise) {
 				inFlightPromise.cancel()
 			}
