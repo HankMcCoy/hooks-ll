@@ -2,22 +2,37 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 
 import { Root } from './root'
+import getOnlineUsers from './get-online-users'
 
-class Counter extends React.Component {
-	state = { count: 0 }
+class OnlineUsers extends React.Component {
+	state = { users: undefined }
 	render() {
-		return (
+		const { users } = this.state
+		return users === undefined ? (
+			'Loading...'
+		) : (
 			<Root>
-				<button onClick={() => this.setState(s => ({ count: s.count + 1 }))}>
-					+
-				</button>
-				<button onClick={() => this.setState(s => ({ count: s.count - 1 }))}>
-					-
-				</button>
-				<span>{this.state.count}</span>
+				<ul>
+					{users.map(u => (
+						<li key={u.id}>{u.name}</li>
+					))}
+				</ul>
 			</Root>
 		)
 	}
+
+	componentDidMount() {
+		this.inFlightPromise = getOnlineUsers().then(users => {
+			this.setState({ users })
+			this.inFlightPromise = null
+		})
+	}
+
+	componentWillUnmount() {
+		if (this.inFlightPromise) {
+			this.inFlightPromise.cancel()
+		}
+	}
 }
 
-ReactDOM.render(<Counter />, document.querySelector('#app'))
+ReactDOM.render(<OnlineUsers />, document.querySelector('#app'))
