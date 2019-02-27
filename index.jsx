@@ -14,7 +14,7 @@ function OnlineUsers() {
 				inFlightPromise.cancel()
 			}
 		}
-	})
+	}, [])
 
 	return users === undefined ? (
 		'Loading...'
