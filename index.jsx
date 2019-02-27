@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom'
 
 import { Root } from './root'
 import getOnlineUsers from './get-online-users'
+import getUserDetail from './get-user-detail'
 
 function OnlineUsers() {
 	const [users, setUsers] = useState()
+	const [selectedUserId, setSelectedUserId] = useState()
 
 	useEffect(() => {
 		const inFlightPromise = getOnlineUsers().then(u => setUsers(u))
@@ -21,11 +23,32 @@ function OnlineUsers() {
 	) : (
 		<Root>
 			<ul>
-				{users.map(u => (
-					<li key={u.id}>{u.name}</li>
+				{users.map(({ id, name }) => (
+					<li key={id} onClick={() => setSelectedUserId(id)}>
+						{name}
+					</li>
 				))}
 			</ul>
+			{selectedUserId ? <User id={selectedUserId} /> : null}
 		</Root>
+	)
+}
+
+function User({ id, name }) {
+	const [userDetail, setUserDetail] = useState()
+	useEffect(() => {
+		const inFlightPromise = getUserDetail(id).then(ud => setUserDetail(ud))
+		return () => {
+			if (inFlightPromise) {
+				inFlightPromise.cancel()
+			}
+		}
+	}, [])
+	return (
+		<div>
+			<h2>{name}</h2>
+			<p>{userDetail ? userDetail.summary : null}</p>
+		</div>
 	)
 }
 
