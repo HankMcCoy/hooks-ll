@@ -34,20 +34,21 @@ function OnlineUsers() {
 	)
 }
 
-function User({ id, name }) {
+function User({ id }) {
 	const [userDetail, setUserDetail] = useState()
 	useEffect(() => {
+		setUserDetail(undefined)
 		const inFlightPromise = getUserDetail(id).then(ud => setUserDetail(ud))
 		return () => {
 			if (inFlightPromise) {
 				inFlightPromise.cancel()
 			}
 		}
-	}, [])
+	}, [id])
 	return (
 		<div>
 			<h2>{name}</h2>
-			<p>{userDetail ? userDetail.summary : null}</p>
+			<p>{userDetail ? userDetail.summary : 'Loading...'}</p>
 		</div>
 	)
 }
