@@ -2,14 +2,28 @@ import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
 import { Root } from './root'
-import getOnlineUsers from './get-online-users'
-import getUserDetail from './get-user-detail'
+import jsonXhr from './json-xhr'
+
+function useFetch(url) {
+	const [result, setResult] = useState()
+	useEffect(() => {
+		setResult(undefined)
+		let xhrInFlight = jsonXhr({ method: 'GET', url }).then(data => {
+			setResult(data)
+			xhrInFlight = null
+		})
+		return () => {
+			if (xhrInFlight) {
+				xhrInFlight.cancel()
+			}
+		}
+	}, [url])
+	return result
+}
 
 function OnlineUsers() {
-	const [users, setUsers] = useState()
+	const users = useFetch('/online-users')
 	const [selectedUserId, setSelectedUserId] = useState()
-
-	useEffectWithCancel(() => getOnlineUsers().then(u => setUsers(u)), [])
 
 	return users === undefined ? (
 		'Loading...'
@@ -28,11 +42,7 @@ function OnlineUsers() {
 }
 
 function User({ id, name }) {
-	const [userDetail, setUserDetail] = useState()
-	useEffectWithCancel(() => {
-		setUserDetail(undefined)
-		return getUserDetail(id).then(ud => setUserDetail(ud))
-	}, [id])
+	const userDetail = useFetch(`/users/${id}`)
 
 	return (
 		<div>
@@ -40,19 +50,6 @@ function User({ id, name }) {
 			<p>{userDetail ? userDetail.summary : 'Loading...'}</p>
 		</div>
 	)
-}
-
-function useEffectWithCancel(createEffect, deps) {
-	useEffect(() => {
-		let inFlightPromise = createEffect().then(() => {
-			inFlightPromise = null
-		})
-		return () => {
-			if (inFlightPromise) {
-				inFlightPromise.cancel()
-			}
-		}
-	}, deps)
 }
 
 ReactDOM.render(<OnlineUsers />, document.querySelector('#app'))
