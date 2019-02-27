@@ -5,6 +5,7 @@ P.config({
 })
 
 export default function getOnlineUsers() {
+	console.log('Fetching online users…')
 	return new P(resolve => {
 		setTimeout(() => {
 			resolve([
